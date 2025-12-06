@@ -63,6 +63,9 @@ async function showQRModal(url) {
   // Attach Shadow DOM
   const shadowRoot = host.attachShadow({ mode: 'open' });
   
+  // Disable page scrolling
+  document.body.style.overflow = 'hidden';
+  
   // Add warning box styles to modal styles
   const qrModalHTML = `
     ${getModalStyles()}
@@ -77,7 +80,7 @@ async function showQRModal(url) {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
       #govpl-qr-modal {
-        z-index: 9999999;
+        z-index: 2147483647 !important;
       }
     </style>
     <div id="govpl-qr-modal">
@@ -122,12 +125,28 @@ async function showQRModal(url) {
   }
   
   // Close handlers
-  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => host.remove());
-  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => host.remove());
+  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => {
+    document.body.style.overflow = '';
+    host.remove();
+  });
+  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => {
+    document.body.style.overflow = '';
+    host.remove();
+  });
+  
+  // Handle footer link click
+  const footerLink = shadowRoot.querySelector('.govpl-modal-footer a');
+  if (footerLink) {
+    footerLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(footerLink.href, '_blank');
+    });
+  }
   
   // Auto-expire after 5 minutes
   setTimeout(() => {
     if (document.getElementById('govpl-qr-modal-host')) {
+      document.body.style.overflow = '';
       host.remove();
     }
   }, 300000);
@@ -191,6 +210,10 @@ function showSecurityWarning(warningType, details) {
     actionText = 'Opuść tę stronę';
   }
   
+  // Disable page scrolling
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  
   const warning = document.createElement('div');
   warning.id = 'govpl-security-warning';
   warning.className = `warning-level-${level}`;
@@ -233,11 +256,15 @@ function showSecurityWarning(warningType, details) {
   
   // Event listeners
   document.getElementById('govpl-go-back').addEventListener('click', () => {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     window.history.back();
   });
   
   document.getElementById('govpl-proceed').addEventListener('click', () => {
     sessionStorage.setItem(dismissKey, 'true');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     warning.remove();
   });
 }
@@ -249,13 +276,13 @@ function getModalStyles() {
       :host {
         all: initial;
       }
-      #govpl-report-modal {
+      #govpl-report-modal, #govpl-qr-modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 2147483647;
+        z-index: 2147483647 !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
       .govpl-overlay {
@@ -448,6 +475,9 @@ async function showReportModal(url, hostname) {
   // Attach Shadow DOM
   const shadowRoot = host.attachShadow({ mode: 'open' });
   
+  // Disable page scrolling
+  document.body.style.overflow = 'hidden';
+  
   // Create modal content
   const modalHTML = `
     ${getModalStyles()}
@@ -514,8 +544,32 @@ async function showReportModal(url, hostname) {
   }
   
   // Close handlers
-  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => host.remove());
-  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => host.remove());
+  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => {
+    document.body.style.overflow = '';
+    host.remove();
+  });
+  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => {
+    document.body.style.overflow = '';
+    host.remove();
+  });
+  
+  // Handle report button click
+  const reportBtn = shadowRoot.querySelector('.govpl-report-btn');
+  if (reportBtn) {
+    reportBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(certReportUrl, '_blank');
+    });
+  }
+  
+  // Handle footer link click
+  const footerLink = shadowRoot.querySelector('.govpl-modal-footer a');
+  if (footerLink) {
+    footerLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(footerLink.href, '_blank');
+    });
+  }
 }
 
 // Initialize
