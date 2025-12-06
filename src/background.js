@@ -147,8 +147,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   ]);
   
   if (details.reason === 'install') {
-    // Open welcome page
-    chrome.tabs.create({ url: 'https://www.gov.pl/mobywatel' });
+    // Mark welcome as seen immediately so popup won't show it again
+    await chrome.storage.local.set({ welcomeSeen: true });
+    
+    // Open welcome page on first install
+    chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
   }
 });
 

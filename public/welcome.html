@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Witaj w Weryfikacji GOV.PL</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .welcome-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 900px;
+      width: 100%;
+      overflow: hidden;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-header {
+      background: linear-gradient(135deg, #dc143c 0%, #a01028 100%);
+      color: white;
+      padding: 50px 40px;
+      text-align: center;
+    }
+
+    .welcome-header .logo {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .welcome-header h1 {
+      font-size: 36px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .welcome-header p {
+      font-size: 18px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .welcome-content {
+      padding: 50px 40px;
+    }
+
+    .video-section {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .video-section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .video-placeholder {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 100px 40px;
+      text-align: center;
+      border: 2px dashed #ddd;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-placeholder::before {
+      content: '▶';
+      font-size: 80px;
+      color: #dc143c;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .video-placeholder p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    /* If you have an actual video */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .feature {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .feature h3 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .instructions {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    .instructions h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .instruction-steps {
+      list-style: none;
+      counter-reset: step-counter;
+    }
+
+    .instruction-steps li {
+      counter-increment: step-counter;
+      position: relative;
+      padding-left: 60px;
+      margin-bottom: 25px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .instruction-steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(135deg, #dc143c 0%, #a01028 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .welcome-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 16px 40px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #dc143c 0%, #a01028 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 20, 60, 0.5);
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      background: #f8f9fa;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #dc143c;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .welcome-header {
+        padding: 30px 20px;
+      }
+
+      .welcome-header .logo {
+        font-size: 60px;
+      }
+
+      .welcome-header h1 {
+        font-size: 28px;
+      }
+
+      .welcome-content {
+        padding: 30px 20px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-container">
+    <div class="welcome-header">
+      <div class="logo">🛡️</div>
+      <h1>Witaj w Weryfikacji GOV.PL!</h1>
+      <p>Chroń się przed fałszywymi stronami rządowymi dzięki weryfikacji z aplikacją mObywatel</p>
+    </div>
+
+    <div class="welcome-content">
+      <div class="video-section">
+        <h2>Zobacz jak to działa</h2>
+        <!-- Replace with actual video when available -->
+        <div class="video-placeholder">
+          <p>Tutaj będzie wideo instruktażowe<br>pokazujące jak korzystać z rozszerzenia</p>
+        </div>
+        <!-- Uncomment when you have a video URL:
+        <div class="video-container">
+          <iframe src="YOUR_VIDEO_URL" frameborder="0" allowfullscreen></iframe>
+        </div>
+        -->
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <span class="feature-icon">✓</span>
+          <h3>Weryfikacja QR</h3>
+          <p>Zeskanuj kod QR w aplikacji mObywatel aby zweryfikować autentyczność strony</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">📋</span>
+          <h3>Lista oficjalna</h3>
+          <p>Sprawdzanie z oficjalną listą domen rządowych dns.pl</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">⛔</span>
+          <h3>Ochrona CERT.PL</h3>
+          <p>Blokowanie złośliwych stron zgłoszonych przez CERT Polska</p>
+        </div>
+      </div>
+
+      <div class="instructions">
+        <h2>Jak korzystać z rozszerzenia?</h2>
+        <ol class="instruction-steps">
+          <li>
+            <strong>Odwiedź stronę gov.pl</strong><br>
+            Wejdź na dowolną stronę z domeną .gov.pl
+          </li>
+          <li>
+            <strong>Kliknij ikonę rozszerzenia</strong><br>
+            Znajdziesz ją w pasku narzędzi przeglądarki lub na stronie jako przycisk "Weryfikuj"
+          </li>
+          <li>
+            <strong>Sprawdź status weryfikacji</strong><br>
+            Zobacz czy strona jest na oficjalnej liście i używa bezpiecznego HTTPS
+          </li>
+          <li>
+            <strong>Użyj kodu QR (opcjonalnie)</strong><br>
+            Zeskanuj kod QR aplikacją mObywatel dla dodatkowej weryfikacji
+          </li>
+        </ol>
+      </div>
+
+      <div class="welcome-actions">
+        <button class="btn btn-primary" id="get-started">Zacznij korzystać</button>
+        <a href="https://www.gov.pl/mobywatel" target="_blank" class="btn btn-secondary">
+          Pobierz mObywatel
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>
+        Rozszerzenie weryfikuje strony z użyciem list:
+        <a href="https://www.dns.pl/lista_gov_pl_z_www.csv" target="_blank">dns.pl</a> • 
+        <a href="https://cert.pl/lista-ostrzezen/" target="_blank">CERT Polska</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('get-started').addEventListener('click', async () => {
+      // Mark welcome as seen
+      await chrome.storage.local.set({ welcomeSeen: true });
+      
+      // Close welcome tab and open popup
+      window.close();
+    });
+  </script>
+</body>
+</html>
