@@ -4,10 +4,17 @@ import manifest from './manifest.json'
 
 export default defineConfig({
   plugins: [crx({ manifest })],
+  server: {
+    port: 3000,
+    strictPort: true,
+    hmr: {
+      clientPort: 3000
+    }
+  },
   build: {
     rollupOptions: {
       input: {
-        welcome: 'public/welcome.html',
+        welcome: 'pages/welcome.html',
       }
     }
   }

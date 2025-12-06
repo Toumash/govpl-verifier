@@ -119,8 +119,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Will respond asynchronously
   } else if (message.action === 'openPopup') {
     // Open popup when requested from welcome page
-    chrome.action.openPopup();
-    sendResponse({ success: true });
+    chrome.action.openPopup().then(() => {
+      sendResponse({ success: true });
+    }).catch((error) => {
+      console.error('Failed to open popup:', error);
+      sendResponse({ success: false, error: error.message });
+    });
     return true;
   }
 });

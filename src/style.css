@@ -24,7 +24,7 @@ body {
 }
 
 .header {
-  padding: 20px;
+  padding: 12px 20px;
   color: white;
   text-align: center;
 }
@@ -46,24 +46,24 @@ body {
 }
 
 .header .icon {
-  font-size: 48px;
-  margin-bottom: 10px;
+  font-size: 36px;
+  margin-bottom: 6px;
 }
 
 .header h1 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   margin: 0;
 }
 
 .content {
-  padding: 20px;
+  padding: 15px;
 }
 
 .status-box {
-  padding: 20px;
+  padding: 12px 15px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   text-align: center;
 }
 
@@ -88,8 +88,8 @@ body {
 }
 
 .status-box h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 6px;
 }
 
 .status-box.safe h2 {
@@ -133,14 +133,14 @@ body {
 .details {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 10px 15px;
+  margin-bottom: 12px;
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 6px 0;
   border-bottom: 1px solid #e9ecef;
 }
 
@@ -174,14 +174,14 @@ body {
 
 button {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .btn-primary {
@@ -209,16 +209,16 @@ button {
 .verification-details {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 12px 15px;
-  margin-bottom: 15px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
   border-left: 4px solid #dc143c;
 }
 
 .detail-line {
-  font-size: 13px;
-  padding: 4px 0;
+  font-size: 12px;
+  padding: 3px 0;
   color: #495057;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .link {
@@ -226,8 +226,8 @@ button {
   text-align: center;
   color: #dc143c;
   text-decoration: none;
-  font-size: 13px;
-  margin-top: 15px;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
 .link:hover {
