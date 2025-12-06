@@ -1,0 +1,180 @@
+/* Floating button */
+#govpl-float-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999999;
+}
+
+#govpl-float-btn button {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #dc143c 0%, #a01028 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+  transition: all 0.3s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#govpl-float-btn button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 20, 60, 0.5);
+}
+
+/* QR Modal */
+#govpl-qr-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.govpl-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.govpl-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.govpl-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #dc143c 0%, #a01028 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.govpl-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.govpl-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.govpl-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.govpl-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.govpl-modal-body p {
+  margin: 0 0 20px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.govpl-qr {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.govpl-qr canvas {
+  border: 8px solid white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.govpl-url-box {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid #dc143c;
+  text-align: left;
+}
+
+.govpl-url-box strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.govpl-url-box div {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #666;
+  word-break: break-all;
+}
+
+.govpl-warning-box {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #856404;
+}
+
+.govpl-modal-footer {
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-radius: 0 0 16px 16px;
+  text-align: center;
+}
+
+.govpl-modal-footer a {
+  color: #dc143c;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.govpl-modal-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .govpl-modal {
+    width: 95%;
+  }
+  
+  #govpl-float-btn button {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
