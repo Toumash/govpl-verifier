@@ -147,16 +147,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   ]);
   
   if (details.reason === 'install') {
-    // Pin the extension icon to toolbar
-    try {
-      await chrome.action.setUserSettings({
-        isOnToolbar: true
-      });
-      console.log('Extension icon pinned to toolbar');
-    } catch (error) {
-      console.log('Could not pin extension icon (may require Chrome 121+):', error);
-    }
-    
     // Open welcome page
     chrome.tabs.create({ url: 'https://www.gov.pl/mobywatel' });
   }
