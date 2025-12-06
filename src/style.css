@@ -182,21 +182,25 @@ button {
 }
 
 .btn-primary {
-  background: #dc143c;
+  background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+  transform: translateY(0);
 }
 
 .btn-primary:hover {
-  background: #c00030;
+  background: linear-gradient(135deg, #0052cc 0%, #0041a8 100%);
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: #dc3545;
   color: white;
 }
 
 .btn-secondary:hover {
-  background: #545b62;
+  background: #c82333;
 }
 
 .verification-details {
