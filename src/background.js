@@ -117,6 +117,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'checkPageSecurity') {
     checkPageSecurity(message).then(sendResponse);
     return true; // Will respond asynchronously
+  } else if (message.action === 'openPopup') {
+    // Open popup when requested from welcome page
+    chrome.action.openPopup();
+    sendResponse({ success: true });
+    return true;
   }
 });
 

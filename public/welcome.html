@@ -380,7 +380,10 @@
       // Mark welcome as seen
       await chrome.storage.local.set({ welcomeSeen: true });
       
-      // Close welcome tab and open popup
+      // Send message to background to open popup
+      await chrome.runtime.sendMessage({ action: 'openPopup' });
+      
+      // Close welcome tab
       window.close();
     });
   </script>

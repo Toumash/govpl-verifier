@@ -100,9 +100,9 @@ async function init() {
 function updateIcon(status, tabId) {
   // Always use default grey icon - badge will show status
   const icons = {
-    16: 'public/icons/icon-16.png',
-    48: 'public/icons/icon-48.png',
-    128: 'public/icons/icon-128.png'
+    16: 'icons/icon-16.png',
+    48: 'icons/icon-48.png',
+    128: 'icons/icon-128.png'
   };
   
   chrome.action.setIcon({ tabId, path: icons }).catch(() => {});
