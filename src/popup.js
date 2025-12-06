@@ -4,19 +4,8 @@ import './style.css';
 const app = document.getElementById('app');
 
 async function init() {
-  // Check if welcome page was seen
-  const { welcomeSeen } = await chrome.storage.local.get('welcomeSeen');
-  
-  console.log('Popup init - welcomeSeen:', welcomeSeen);
-  
-  if (!welcomeSeen) {
-    // Welcome not seen yet - show it
-    console.log('Welcome not seen, opening welcome page');
-    showWelcomeMessage();
-    return;
-  }
-  
-  console.log('Welcome already seen, showing verification');
+  // Always show verification popup
+  // Welcome page is only opened programmatically on install via background.js
   const result = await verifyWebsite();
   
   app.innerHTML = `
@@ -106,12 +95,6 @@ async function init() {
   
   // Update icon
   updateIcon(result.status, result.tabId);
-}
-
-async function showWelcomeMessage() {
-  // Automatically open welcome page and close popup
-  await chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
-  window.close();
 }
 
 function updateIcon(status, tabId) {
