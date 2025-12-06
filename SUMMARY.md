@@ -183,7 +183,7 @@ gov-pl-verifier/
 ### Dla pełnego wdrożenia produkcyjnego:
 - [ ] Backend API do zarządzania sesjami weryfikacji
 - [ ] Integracja z prawdziwą aplikacją mObywatel
-- [ ] Lista oficjalnych domen z JSON (resource file)
+- [x] Lista oficjalnych domen z JSON (resource file)
 - [ ] Podpis cyfrowy kodów QR
 - [ ] Szyfrowanie end-to-end
 - [ ] Testy jednostkowe
