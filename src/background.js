@@ -1,9 +1,10 @@
 // Background service worker
 import { getOfficialDomainsList, isOfficialGovPlDomain, getCacheInfo } from './domainsList.js';
+import { getMaliciousDomainsList, isMaliciousDomain, getMaliciousCacheInfo } from './maliciousDomains.js';
 
 console.log('GOV.PL Verifier Extension loaded');
 
-// Pre-fetch domains list on startup
+// Pre-fetch domains lists on startup
 async function initializeDomainsList() {
   try {
     console.log('Fetching official gov.pl domains list...');
@@ -19,6 +20,23 @@ async function initializeDomainsList() {
     console.log('Cache info:', cacheInfo);
   } catch (error) {
     console.error('Error initializing domains list:', error);
+  }
+}
+
+async function initializeMaliciousList() {
+  try {
+    console.log('Fetching malicious domains list from CERT.PL...');
+    const malicious = await getMaliciousDomainsList();
+    if (malicious) {
+      console.log(`Loaded ${malicious.length} malicious domains from CERT.PL`);
+    } else {
+      console.warn('Failed to load malicious domains list');
+    }
+    
+    const cacheInfo = await getMaliciousCacheInfo();
+    console.log('Malicious domains cache info:', cacheInfo);
+  } catch (error) {
+    console.error('Error initializing malicious domains list:', error);
   }
 }
 
@@ -82,10 +100,51 @@ async function updateIconForTab(tabId, url) {
   }
 }
 
+// Handle messages from content scripts
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'checkPageSecurity') {
+    checkPageSecurity(message).then(sendResponse);
+    return true; // Will respond asynchronously
+  }
+});
+
+// Check if page should show security warning
+async function checkPageSecurity({ url, hostname, protocol }) {
+  try {
+    // Check if domain is malicious
+    const isMalicious = await isMaliciousDomain(hostname);
+    if (isMalicious) {
+      return {
+        showWarning: true,
+        warningType: 'malicious',
+        details: { url, hostname }
+      };
+    }
+    
+    // Check if it's a gov.pl site without HTTPS
+    const isGovPl = hostname.endsWith('.gov.pl') || hostname === 'gov.pl';
+    if (isGovPl && protocol !== 'https:') {
+      return {
+        showWarning: true,
+        warningType: 'no-https',
+        details: { url, hostname }
+      };
+    }
+    
+    return { showWarning: false };
+  } catch (error) {
+    console.error('Error checking page security:', error);
+    return { showWarning: false };
+  }
+}
+
 // On install
 chrome.runtime.onInstalled.addListener(async (details) => {
-  // Initialize domains list on install or update
-  await initializeDomainsList();
+  // Initialize both lists on install or update
+  await Promise.all([
+    initializeDomainsList(),
+    initializeMaliciousList()
+  ]);
   
   if (details.reason === 'install') {
     // Pin the extension icon to toolbar
@@ -103,15 +162,20 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-// Refresh domains list daily
+// Refresh domains lists periodically
 chrome.alarms.create('refreshDomainsList', { periodInMinutes: 1440 }); // 24 hours
+chrome.alarms.create('refreshMaliciousList', { periodInMinutes: 360 }); // 6 hours
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'refreshDomainsList') {
-    console.log('Refreshing domains list...');
+    console.log('Refreshing official domains list...');
     initializeDomainsList();
+  } else if (alarm.name === 'refreshMaliciousList') {
+    console.log('Refreshing malicious domains list...');
+    initializeMaliciousList();
   }
 });
 
 // Initialize on startup
 initializeDomainsList();
+initializeMaliciousList();

@@ -168,6 +168,146 @@
   text-decoration: underline;
 }
 
+/* Full-screen security warning */
+#govpl-security-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999999;
+  background: #d32f2f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-y: auto;
+}
+
+.govpl-warning-container {
+  max-width: 600px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+}
+
+.govpl-warning-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.govpl-warning-container h1 {
+  font-size: 32px;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+}
+
+.govpl-warning-container h2 {
+  font-size: 24px;
+  margin: 0 0 30px 0;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.govpl-warning-details {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 30px 0;
+  text-align: left;
+}
+
+.govpl-warning-details p {
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.govpl-warning-details strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.govpl-warning-details code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+.govpl-warning-actions {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.govpl-warning-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.govpl-warning-btn-primary {
+  background: white;
+  color: #d32f2f;
+}
+
+.govpl-warning-btn-primary:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.govpl-warning-btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.govpl-warning-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.govpl-warning-info {
+  margin-top: 30px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.govpl-warning-info a {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Non-HTTPS warning variant */
+#govpl-security-warning.warning-level-medium {
+  background: #f57c00;
+}
+
+/* Malicious site variant */
+#govpl-security-warning.warning-level-critical {
+  background: #b71c1c;
+}
+
 @media (max-width: 600px) {
   .govpl-modal {
     width: 95%;
@@ -176,5 +316,21 @@
   #govpl-float-btn button {
     padding: 10px 16px;
     font-size: 13px;
+  }
+  
+  .govpl-warning-container {
+    padding: 20px;
+  }
+  
+  .govpl-warning-container h1 {
+    font-size: 24px;
+  }
+  
+  .govpl-warning-container h2 {
+    font-size: 18px;
+  }
+  
+  .govpl-warning-icon {
+    font-size: 60px;
   }
 }

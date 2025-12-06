@@ -12,7 +12,9 @@
   ],
   "host_permissions": [
     "<all_urls>",
-    "https://www.dns.pl/*"
+    "https://www.dns.pl/*",
+    "https://hole.cert.pl/*",
+    "https://cert.pl/*"
   ],
   "action": {
     "default_popup": "index.html",

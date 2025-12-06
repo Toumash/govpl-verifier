@@ -2,10 +2,15 @@ import QRCode from 'qrcode';
 import { generateNonce } from './utils.js';
 import './content.css';
 
-// Listen for messages from popup
+// Check for security threats immediately
+checkPageSecurity();
+
+// Listen for messages from popup and background
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'showQR') {
     showQRModal(message.url);
+  } else if (message.action === 'showSecurityWarning') {
+    showSecurityWarning(message.warningType, message.details);
   }
 });
 
@@ -94,6 +99,115 @@ async function showQRModal(url) {
       modal.remove();
     }
   }, 300000);
+}
+
+// Check page security for threats
+async function checkPageSecurity() {
+  try {
+    const response = await chrome.runtime.sendMessage({ 
+      action: 'checkPageSecurity',
+      url: window.location.href,
+      hostname: window.location.hostname,
+      protocol: window.location.protocol
+    });
+    
+    if (response && response.showWarning) {
+      showSecurityWarning(response.warningType, response.details);
+    }
+  } catch (error) {
+    console.error('[GOV.PL Verifier] Error checking page security:', error);
+  }
+}
+
+// Show full-screen security warning
+function showSecurityWarning(warningType, details) {
+  // Don't show warning if user has already dismissed it for this session
+  const dismissKey = `govpl-dismissed-${window.location.hostname}`;
+  if (sessionStorage.getItem(dismissKey)) {
+    return;
+  }
+  
+  // Remove existing warning if any
+  const existing = document.getElementById('govpl-security-warning');
+  if (existing) existing.remove();
+  
+  let title, subtitle, icon, level, reasons, actionText;
+  
+  if (warningType === 'malicious') {
+    title = 'NIEBEZPIECZNA STRONA';
+    subtitle = 'Ta strona została zgłoszona jako złośliwa przez CERT Polska';
+    icon = '⛔';
+    level = 'critical';
+    reasons = [
+      'Strona znajduje się na liście ostrzeżeń CERT Polska',
+      'Może próbować wykraść Twoje dane osobowe lub finansowe',
+      'Może zawierać złośliwe oprogramowanie',
+      'Zalecamy natychmiastowe opuszczenie tej strony'
+    ];
+    actionText = 'Wróć do bezpiecznej strony';
+  } else if (warningType === 'no-https') {
+    title = 'NIEZABEZPIECZONE POŁĄCZENIE';
+    subtitle = 'Ta strona gov.pl nie używa bezpiecznego protokołu HTTPS';
+    icon = '⚠️';
+    level = 'medium';
+    reasons = [
+      'Połączenie nie jest szyfrowane',
+      'Twoje dane mogą być przechwycone przez osoby trzecie',
+      'Nie możemy zweryfikować autentyczności strony',
+      'Oficjalne strony gov.pl powinny używać HTTPS'
+    ];
+    actionText = 'Opuść tę stronę';
+  }
+  
+  const warning = document.createElement('div');
+  warning.id = 'govpl-security-warning';
+  warning.className = `warning-level-${level}`;
+  warning.innerHTML = `
+    <div class="govpl-warning-container">
+      <div class="govpl-warning-icon">${icon}</div>
+      <h1>${title}</h1>
+      <h2>${subtitle}</h2>
+      
+      <div class="govpl-warning-details">
+        <strong>Powody ostrzeżenia:</strong>
+        ${reasons.map(reason => `<p>• ${reason}</p>`).join('')}
+        ${details ? `
+          <p style="margin-top: 20px;">
+            <strong>Adres strony:</strong><br>
+            <code>${details.url || window.location.href}</code>
+          </p>
+        ` : ''}
+      </div>
+      
+      <div class="govpl-warning-actions">
+        <button class="govpl-warning-btn govpl-warning-btn-primary" id="govpl-go-back">
+          ${actionText}
+        </button>
+        <button class="govpl-warning-btn govpl-warning-btn-secondary" id="govpl-proceed">
+          Rozumiem ryzyko i chcę kontynuować
+        </button>
+      </div>
+      
+      <div class="govpl-warning-info">
+        <p>
+          To ostrzeżenie pochodzi z rozszerzenia "Weryfikacja GOV.PL"<br>
+          Źródło danych: <a href="https://cert.pl/lista-ostrzezen/" target="_blank">CERT Polska</a>
+        </p>
+      </div>
+    </div>
+  `;
+  
+  document.documentElement.appendChild(warning);
+  
+  // Event listeners
+  document.getElementById('govpl-go-back').addEventListener('click', () => {
+    window.history.back();
+  });
+  
+  document.getElementById('govpl-proceed').addEventListener('click', () => {
+    sessionStorage.setItem(dismissKey, 'true');
+    warning.remove();
+  });
 }
 
 // Initialize
