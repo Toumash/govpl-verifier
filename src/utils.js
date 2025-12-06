@@ -73,8 +73,8 @@ export async function verifyWebsite() {
   } else {
     status = 'danger';
     title = 'OSTRZEŻENIE ✗';
-    message = 'To NIE jest strona GOV.PL! Nie wprowadzaj żadnych danych osobowych.';
-    details.push('⚠ Zachowaj szczególną ostrożność na tej stronie');
+    message = 'To NIE jest strona GOV.PL!';
+    details.push('⚠ Zachowaj ostrożność na tej stronie');
   }
   
   return {
