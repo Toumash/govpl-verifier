@@ -43,7 +43,7 @@ function injectFloatingButton() {
 
 async function showQRModal(url) {
   // Remove existing modal if any
-  const existing = document.getElementById('govpl-qr-modal');
+  const existing = document.getElementById('govpl-qr-modal-host');
   if (existing) existing.remove();
   
   const nonce = generateNonce();
@@ -56,33 +56,57 @@ async function showQRModal(url) {
     timestamp: Date.now()
   };
   
-  const modal = document.createElement('div');
-  modal.id = 'govpl-qr-modal';
-  modal.innerHTML = `
-    <div class="govpl-overlay"></div>
-    <div class="govpl-modal">
-      <div class="govpl-modal-header">
-        <h2>Weryfikacja GOV.PL</h2>
-        <button class="govpl-close">✕</button>
-      </div>
-      <div class="govpl-modal-body">
-        <p>Zeskanuj kod QR aplikacją <strong>mObywatel</strong> aby zweryfikować autentyczność strony.</p>
-        <div class="govpl-qr" id="govpl-qr"></div>
-        <div class="govpl-url-box">
-          <strong>Weryfikowana strona:</strong>
-          <div>${url}</div>
+  // Create host element
+  const host = document.createElement('div');
+  host.id = 'govpl-qr-modal-host';
+  
+  // Attach Shadow DOM
+  const shadowRoot = host.attachShadow({ mode: 'open' });
+  
+  // Add warning box styles to modal styles
+  const qrModalHTML = `
+    ${getModalStyles()}
+    <style>
+      .govpl-warning-box {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #856404;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      #govpl-qr-modal {
+        z-index: 9999999;
+      }
+    </style>
+    <div id="govpl-qr-modal">
+      <div class="govpl-overlay"></div>
+      <div class="govpl-modal">
+        <div class="govpl-modal-header">
+          <h2>Weryfikacja GOV.PL</h2>
+          <button class="govpl-close">✕</button>
         </div>
-        <div class="govpl-warning-box">
-          ⚠ Kod jest jednorazowy i wygasa po 5 minutach
+        <div class="govpl-modal-body">
+          <p>Zeskanuj kod QR aplikacją <strong>mObywatel</strong> aby zweryfikować autentyczność strony.</p>
+          <div class="govpl-qr" id="govpl-qr"></div>
+          <div class="govpl-url-box">
+            <strong>Weryfikowana strona:</strong>
+            <div>${url}</div>
+          </div>
+          <div class="govpl-warning-box">
+            ⚠ Kod jest jednorazowy i wygasa po 5 minutach
+          </div>
         </div>
-      </div>
-      <div class="govpl-modal-footer">
-        <a href="https://www.gov.pl/mobywatel" target="_blank">Pobierz mObywatel</a>
+        <div class="govpl-modal-footer">
+          <a href="https://www.gov.pl/mobywatel" target="_blank">Pobierz mObywatel</a>
+        </div>
       </div>
     </div>
   `;
   
-  document.body.appendChild(modal);
+  shadowRoot.innerHTML = qrModalHTML;
+  document.body.appendChild(host);
   
   // Generate QR code
   try {
@@ -92,19 +116,19 @@ async function showQRModal(url) {
       margin: 2,
       color: { dark: '#000', light: '#fff' }
     });
-    document.getElementById('govpl-qr').appendChild(canvas);
+    shadowRoot.getElementById('govpl-qr').appendChild(canvas);
   } catch (err) {
-    document.getElementById('govpl-qr').innerHTML = '<p style="color:red;">Błąd generowania kodu QR</p>';
+    shadowRoot.getElementById('govpl-qr').innerHTML = '<p style="color:red;">Błąd generowania kodu QR</p>';
   }
   
   // Close handlers
-  modal.querySelector('.govpl-close').addEventListener('click', () => modal.remove());
-  modal.querySelector('.govpl-overlay').addEventListener('click', () => modal.remove());
+  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => host.remove());
+  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => host.remove());
   
   // Auto-expire after 5 minutes
   setTimeout(() => {
-    if (document.getElementById('govpl-qr-modal')) {
-      modal.remove();
+    if (document.getElementById('govpl-qr-modal-host')) {
+      host.remove();
     }
   }, 300000);
 }
@@ -218,12 +242,197 @@ function showSecurityWarning(warningType, details) {
   });
 }
 
+// Get modal CSS styles
+function getModalStyles() {
+  return `
+    <style>
+      :host {
+        all: initial;
+      }
+      #govpl-report-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .govpl-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+      }
+      .govpl-modal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .govpl-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border-radius: 16px 16px 0 0;
+        flex-shrink: 0;
+      }
+      .govpl-modal-header h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .govpl-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 24px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+      .govpl-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .govpl-modal-body {
+        padding: 24px 24px 32px 24px;
+        text-align: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex: 1;
+        min-width: 0;
+      }
+      .govpl-modal-body p {
+        margin: 0 0 20px 0;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+      }
+      .govpl-qr {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        width: 100%;
+      }
+      .govpl-qr canvas {
+        border: 8px solid white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 100%;
+        height: auto;
+      }
+      .govpl-url-box {
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin: 20px 0;
+        border-left: 4px solid #dc143c;
+        text-align: left;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .govpl-url-box strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #333;
+      }
+      .govpl-url-box div {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        color: #666;
+        word-break: break-all;
+      }
+      .govpl-info-box {
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        font-size: 13px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: left;
+      }
+      .govpl-info-yellow {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+      }
+      .govpl-info-grey {
+        background: #f8f9fa;
+        color: #666;
+      }
+      .govpl-info-grey strong {
+        color: #333;
+      }
+      .govpl-info-box ol {
+        margin: 10px 0 0 20px;
+        line-height: 1.8;
+      }
+      .govpl-report-btn {
+        display: inline-block;
+        width: auto;
+        max-width: 100%;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        text-align: center;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        line-height: 1.4;
+      }
+      .govpl-report-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+      }
+      .govpl-modal-footer {
+        padding: 16px 24px;
+        background: #f8f9fa;
+        border-radius: 0 0 16px 16px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .govpl-modal-footer a {
+        color: #dc143c;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .govpl-modal-footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  `;
+}
+
 // Show report modal with QR code and link to CERT.PL
 async function showReportModal(url, hostname) {
   console.log('[Content Script] showReportModal called with:', { url, hostname });
   
   // Remove existing modal if any
-  const existing = document.getElementById('govpl-report-modal');
+  const existing = document.getElementById('govpl-report-modal-host');
   if (existing) {
     console.log('[Content Script] Removing existing modal');
     existing.remove();
@@ -231,61 +440,65 @@ async function showReportModal(url, hostname) {
   
   // Prepare report URL for CERT.PL
   const certReportUrl = `https://incydent.cert.pl/domena#!/lang=pl`;
-  const reportData = {
-    url: url,
-    hostname: hostname,
-    timestamp: Date.now(),
-    reportTo: 'CERT Polska'
-  };
   
-  const modal = document.createElement('div');
-  modal.id = 'govpl-report-modal';
-  modal.innerHTML = `
-    <div class="govpl-overlay"></div>
-    <div class="govpl-modal">
-      <div class="govpl-modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
-        <h2>Zgłoś podejrzaną stronę</h2>
-        <button class="govpl-close">✕</button>
-      </div>
-      <div class="govpl-modal-body">
-        <p>Pomóż chronić innych użytkowników zgłaszając podejrzaną stronę do <strong>CERT Polska</strong>.</p>
-        
-        <div class="govpl-qr" id="govpl-report-qr"></div>
-        
-        <div class="govpl-url-box">
-          <strong>Zgłaszana strona:</strong>
-          <div>${hostname}</div>
+  // Create host element
+  const host = document.createElement('div');
+  host.id = 'govpl-report-modal-host';
+  
+  // Attach Shadow DOM
+  const shadowRoot = host.attachShadow({ mode: 'open' });
+  
+  // Create modal content
+  const modalHTML = `
+    ${getModalStyles()}
+    <div id="govpl-report-modal">
+      <div class="govpl-overlay"></div>
+      <div class="govpl-modal">
+        <div class="govpl-modal-header">
+          <h2>Zgłoś podejrzaną stronę</h2>
+          <button class="govpl-close">✕</button>
         </div>
-        
-        <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 13px; color: #856404;">
-          <strong>💡 Jak zgłosić?</strong>
-          <ol style="margin: 10px 0 0 20px; line-height: 1.8;">
-            <li>Zeskanuj kod QR telefonem</li>
-            <li>Lub kliknij przycisk poniżej</li>
-            <li>Wypełnij formularz na stronie CERT Polska</li>
-            <li>Opisz dlaczego strona wydaje się podejrzana</li>
-          </ol>
+        <div class="govpl-modal-body">
+          <p>Pomóż chronić innych użytkowników zgłaszając podejrzaną stronę do <strong>CERT Polska</strong>.</p>
+          
+          <div class="govpl-qr" id="govpl-report-qr"></div>
+          
+          <div class="govpl-url-box">
+            <strong>Zgłaszana strona:</strong>
+            <div>${hostname}</div>
+          </div>
+          
+          <div class="govpl-info-box govpl-info-yellow">
+            <strong>💡 Jak zgłosić?</strong>
+            <ol>
+              <li>Zeskanuj kod QR telefonem</li>
+              <li>Lub kliknij przycisk poniżej</li>
+              <li>Wypełnij formularz na stronie CERT Polska</li>
+              <li>Opisz dlaczego strona wydaje się podejrzana</li>
+            </ol>
+          </div>
+          
+          <a href="${certReportUrl}" target="_blank" class="govpl-report-btn">
+            Otwórz formularz zgłoszeniowy CERT.PL
+          </a>
+          
+          <div class="govpl-info-box govpl-info-grey">
+            <strong style="display: block; margin-bottom: 8px;">Kiedy zgłaszać?</strong>
+            • Strona podszywająca się pod oficjalną gov.pl<br>
+            • Prośba o dane osobowe lub hasła<br>
+            • Podejrzane przekierowania lub pobieranie plików<br>
+            • Strona wygląda profesjonalnie, ale coś Cię niepokoi
+          </div>
         </div>
-        
-        <a href="${certReportUrl}" target="_blank" class="govpl-report-btn">
-          Otwórz formularz zgłoszeniowy CERT.PL
-        </a>
-        
-        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666;">
-          <strong style="display: block; margin-bottom: 8px; color: #333;">Kiedy zgłaszać?</strong>
-          • Strona podszywająca się pod oficjalną gov.pl<br>
-          • Prośba o dane osobowe lub hasła<br>
-          • Podejrzane przekierowania lub pobieranie plików<br>
-          • Strona wygląda profesjonalnie, ale coś Cię niepokoi
+        <div class="govpl-modal-footer">
+          <a href="https://cert.pl/lista-ostrzezen/" target="_blank">Zobacz listę ostrzeżeń CERT Polska</a>
         </div>
-      </div>
-      <div class="govpl-modal-footer">
-        <a href="https://cert.pl/lista-ostrzezen/" target="_blank">Zobacz listę ostrzeżeń CERT Polska</a>
       </div>
     </div>
   `;
   
-  document.documentElement.appendChild(modal);
+  shadowRoot.innerHTML = modalHTML;
+  document.documentElement.appendChild(host);
   
   // Generate QR code for CERT report URL
   try {
@@ -295,14 +508,14 @@ async function showReportModal(url, hostname) {
       margin: 2,
       color: { dark: '#dc3545', light: '#fff' }
     });
-    document.getElementById('govpl-report-qr').appendChild(canvas);
+    shadowRoot.getElementById('govpl-report-qr').appendChild(canvas);
   } catch (err) {
-    document.getElementById('govpl-report-qr').innerHTML = '<p style="color:red;">Błąd generowania kodu QR</p>';
+    shadowRoot.getElementById('govpl-report-qr').innerHTML = '<p style="color:red;">Błąd generowania kodu QR</p>';
   }
   
   // Close handlers
-  modal.querySelector('.govpl-close').addEventListener('click', () => modal.remove());
-  modal.querySelector('.govpl-overlay').addEventListener('click', () => modal.remove());
+  shadowRoot.querySelector('.govpl-close').addEventListener('click', () => host.remove());
+  shadowRoot.querySelector('.govpl-overlay').addEventListener('click', () => host.remove());
 }
 
 // Initialize
