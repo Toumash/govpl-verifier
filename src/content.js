@@ -304,7 +304,7 @@ function getModalStyles() {
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         max-width: 500px;
         width: 90%;
-        max-height: 80vh;
+        max-height: 90vh;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -481,6 +481,11 @@ async function showReportModal(url, hostname) {
   // Create modal content
   const modalHTML = `
     ${getModalStyles()}
+    <style>
+      #govpl-report-modal {
+        z-index: 2147483647 !important;
+      }
+    </style>
     <div id="govpl-report-modal">
       <div class="govpl-overlay"></div>
       <div class="govpl-modal">
