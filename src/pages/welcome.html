@@ -359,7 +359,6 @@
       </div>
 
       <div class="welcome-actions">
-        <button class="btn btn-primary" id="get-started">Zacznij korzystać</button>
         <a href="https://www.gov.pl/mobywatel" target="_blank" class="btn btn-secondary">
           Pobierz mObywatel
         </a>
@@ -374,18 +373,5 @@
       </p>
     </div>
   </div>
-
-  <script>
-    document.getElementById('get-started').addEventListener('click', async () => {
-      // Mark welcome as seen
-      await chrome.storage.local.set({ welcomeSeen: true });
-      
-      // Send message to background to open popup
-      await chrome.runtime.sendMessage({ action: 'openPopup' });
-      
-      // Close welcome tab
-      window.close();
-    });
-  </script>
 </body>
 </html>
