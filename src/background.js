@@ -63,11 +63,20 @@ async function updateIconForTab(tabId, url) {
     const isGovPl = hostname.endsWith('.gov.pl') || hostname === 'gov.pl';
     const isHttps = protocol === 'https:';
     
+    // Show loading spinner while checking
+    chrome.action.setBadgeText({ tabId, text: '...' });
+    chrome.action.setBadgeBackgroundColor({ tabId, color: '#6c757d' });
+    
     let status = 'danger';
     let badge = '✗';
     let badgeColor = '#dc3545';
     
-    if (isGovPl && isHttps) {
+    // First check if domain is malicious (highest priority)
+    const malicious = await isMaliciousDomain(hostname);
+    if (malicious) {
+      badge = '✗';
+      badgeColor = '#dc3545';
+    } else if (isGovPl && isHttps) {
       // Check against official list
       const isOfficial = await isOfficialGovPlDomain(hostname);
       
@@ -90,6 +99,9 @@ async function updateIconForTab(tabId, url) {
       status = 'warning';
       badge = '!';
       badgeColor = '#ffc107';
+    } else {
+      // Not a gov.pl domain and not malicious - clear badge
+      badge = '';
     }
     
     chrome.action.setBadgeText({ tabId, text: badge });

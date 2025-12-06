@@ -115,13 +115,14 @@ async function showWelcomeMessage() {
 }
 
 function updateIcon(status, tabId) {
+  // Always use default grey icon - badge will show status
   const icons = {
-    safe: { 16: 'icons/safe-16.png', 48: 'icons/safe-48.png', 128: 'icons/safe-128.png' },
-    warning: { 16: 'icons/warning-16.png', 48: 'icons/warning-48.png', 128: 'icons/warning-128.png' },
-    danger: { 16: 'icons/danger-16.png', 48: 'icons/danger-48.png', 128: 'icons/danger-128.png' }
+    16: 'public/icons/icon-16.png',
+    48: 'public/icons/icon-48.png',
+    128: 'public/icons/icon-128.png'
   };
   
-  chrome.action.setIcon({ tabId, path: icons[status] || icons.danger }).catch(() => {});
+  chrome.action.setIcon({ tabId, path: icons }).catch(() => {});
 }
 
 init();
