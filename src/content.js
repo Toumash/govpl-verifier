@@ -7,11 +7,19 @@ checkPageSecurity();
 
 // Listen for messages from popup and background
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('[Content Script] Received message:', message);
+  
   if (message.action === 'showQR') {
     showQRModal(message.url);
   } else if (message.action === 'showSecurityWarning') {
     showSecurityWarning(message.warningType, message.details);
+  } else if (message.action === 'showReportModal') {
+    console.log('[Content Script] Showing report modal for:', message.hostname);
+    showReportModal(message.url, message.hostname);
   }
+  
+  sendResponse({ success: true });
+  return true;
 });
 
 // Inject floating button on every site for easier testing
@@ -208,6 +216,93 @@ function showSecurityWarning(warningType, details) {
     sessionStorage.setItem(dismissKey, 'true');
     warning.remove();
   });
+}
+
+// Show report modal with QR code and link to CERT.PL
+async function showReportModal(url, hostname) {
+  console.log('[Content Script] showReportModal called with:', { url, hostname });
+  
+  // Remove existing modal if any
+  const existing = document.getElementById('govpl-report-modal');
+  if (existing) {
+    console.log('[Content Script] Removing existing modal');
+    existing.remove();
+  }
+  
+  // Prepare report URL for CERT.PL
+  const certReportUrl = `https://incydent.cert.pl/domena#!/lang=pl`;
+  const reportData = {
+    url: url,
+    hostname: hostname,
+    timestamp: Date.now(),
+    reportTo: 'CERT Polska'
+  };
+  
+  const modal = document.createElement('div');
+  modal.id = 'govpl-report-modal';
+  modal.innerHTML = `
+    <div class="govpl-overlay"></div>
+    <div class="govpl-modal">
+      <div class="govpl-modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+        <h2>Zgłoś podejrzaną stronę</h2>
+        <button class="govpl-close">✕</button>
+      </div>
+      <div class="govpl-modal-body">
+        <p>Pomóż chronić innych użytkowników zgłaszając podejrzaną stronę do <strong>CERT Polska</strong>.</p>
+        
+        <div class="govpl-qr" id="govpl-report-qr"></div>
+        
+        <div class="govpl-url-box">
+          <strong>Zgłaszana strona:</strong>
+          <div>${hostname}</div>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 13px; color: #856404;">
+          <strong>💡 Jak zgłosić?</strong>
+          <ol style="margin: 10px 0 0 20px; line-height: 1.8;">
+            <li>Zeskanuj kod QR telefonem</li>
+            <li>Lub kliknij przycisk poniżej</li>
+            <li>Wypełnij formularz na stronie CERT Polska</li>
+            <li>Opisz dlaczego strona wydaje się podejrzana</li>
+          </ol>
+        </div>
+        
+        <a href="${certReportUrl}" target="_blank" class="govpl-report-btn">
+          Otwórz formularz zgłoszeniowy CERT.PL
+        </a>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 13px; color: #666;">
+          <strong style="display: block; margin-bottom: 8px; color: #333;">Kiedy zgłaszać?</strong>
+          • Strona podszywająca się pod oficjalną gov.pl<br>
+          • Prośba o dane osobowe lub hasła<br>
+          • Podejrzane przekierowania lub pobieranie plików<br>
+          • Strona wygląda profesjonalnie, ale coś Cię niepokoi
+        </div>
+      </div>
+      <div class="govpl-modal-footer">
+        <a href="https://cert.pl/lista-ostrzezen/" target="_blank">Zobacz listę ostrzeżeń CERT Polska</a>
+      </div>
+    </div>
+  `;
+  
+  document.documentElement.appendChild(modal);
+  
+  // Generate QR code for CERT report URL
+  try {
+    const canvas = document.createElement('canvas');
+    await QRCode.toCanvas(canvas, certReportUrl, {
+      width: 256,
+      margin: 2,
+      color: { dark: '#dc3545', light: '#fff' }
+    });
+    document.getElementById('govpl-report-qr').appendChild(canvas);
+  } catch (err) {
+    document.getElementById('govpl-report-qr').innerHTML = '<p style="color:red;">Błąd generowania kodu QR</p>';
+  }
+  
+  // Close handlers
+  modal.querySelector('.govpl-close').addEventListener('click', () => modal.remove());
+  modal.querySelector('.govpl-overlay').addEventListener('click', () => modal.remove());
 }
 
 // Initialize

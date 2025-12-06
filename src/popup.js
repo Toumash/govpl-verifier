@@ -85,8 +85,22 @@ async function init() {
   
   const reportBtn = document.getElementById('report-btn');
   if (reportBtn) {
-    reportBtn.addEventListener('click', () => {
-      chrome.tabs.create({ url: 'https://incydent.cert.pl/domena#!/lang=pl' });
+    reportBtn.addEventListener('click', async () => {
+      console.log('Report button clicked, sending message to tab:', result.tabId);
+      try {
+        await chrome.tabs.sendMessage(result.tabId, { 
+          action: 'showReportModal', 
+          url: result.url,
+          hostname: result.hostname
+        });
+        console.log('Message sent successfully');
+        window.close();
+      } catch (error) {
+        console.error('Error sending message:', error);
+        // Fallback - open CERT.PL directly if content script not loaded
+        chrome.tabs.create({ url: 'https://incydent.cert.pl/domena#!/lang=pl' });
+        window.close();
+      }
     });
   }
   
