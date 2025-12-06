@@ -14,6 +14,7 @@ To rozszerzenie Chrome zostało stworzone w odpowiedzi na rosnącą liczbę atak
 ### 1. Automatyczna weryfikacja bezpieczeństwa
 
 Po zainstalowaniu rozszerzenie automatycznie sprawdza każdą odwiedzaną stronę pod kątem:
+
 - Przynależności do domeny `.gov.pl`
 - Zabezpieczenia połączenia (HTTPS/HTTP)
 - Wyświetla badge z wynikiem weryfikacji na ikonie rozszerzenia
@@ -21,6 +22,7 @@ Po zainstalowaniu rozszerzenie automatycznie sprawdza każdą odwiedzaną stron�
 ### 2. Szczegółowy popup weryfikacyjny
 
 Kliknięcie ikony rozszerzenia pokazuje szczegółowe informacje:
+
 - **Status bezpieczeństwa** - zielony (bezpieczne), żółty (ostrzeżenie), czerwony (niebezpieczne)
 - **Domena** - czy strona należy do gov.pl
 - **Protokół** - czy połączenie jest szyfrowane (HTTPS)
@@ -30,6 +32,7 @@ Kliknięcie ikony rozszerzenia pokazuje szczegółowe informacje:
 ### 3. Weryfikacja QR Code przez mObywatel
 
 Na oficjalnych stronach gov.pl dostępny jest floating button "Weryfikuj":
+
 - Wyświetla modal z kodem QR
 - Kod zawiera:
   - URL weryfikowanej strony
@@ -67,7 +70,8 @@ Na oficjalnych stronach gov.pl dostępny jest floating button "Weryfikuj":
 ### Dla deweloperów
 
 #### Wymagania:
-- Node.js 18+ 
+
+- Node.js 18+
 - npm
 - Chrome/Edge/Brave
 
@@ -179,24 +183,29 @@ gov-pl-verifier/
 ### Zaimplementowane mechanizmy:
 
 ✅ **Nonce (Number Once)**
+
 - 32-bajtowy kryptograficznie bezpieczny nonce
 - Generowany przez `crypto.getRandomValues()`
 - Unikalny dla każdej sesji
 - Zapobiega replay attacks
 
 ✅ **Timeout**
+
 - Kod QR ważny tylko 5 minut
 - Automatyczne wygaśnięcie sesji
 
 ✅ **Walidacja domen**
+
 - Sprawdzanie końcówki `.gov.pl`
 - Możliwość rozszerzenia o whitelist oficjalnych domen
 
 ✅ **HTTPS Only**
+
 - Wymóg HTTPS dla pełnej weryfikacji
 - Ostrzeżenia dla HTTP
 
 ✅ **Content Security Policy**
+
 - Ograniczenie źródeł skryptów przez Manifest V3
 - Zapobieganie XSS
 
@@ -212,29 +221,34 @@ gov-pl-verifier/
 ## Kryteria hackathonu
 
 ### Związek z wyzwaniem (25%)
+
 ✅ Bezpośrednie rozwiązanie problemu phishingu stron gov.pl
 ✅ Integracja z aplikacją mObywatel
 ✅ Mechanizm weryfikacji QR code
 
 ### Wdrożeniowy potencjał (25%)
+
 ✅ Gotowy prototyp działający w Chrome
 ✅ Możliwość rozszerzenia na Firefox, Edge
 ✅ Jasna ścieżka integracji z systemami rządowymi
 ✅ Możliwość wdrożenia jako oficjalne rozszerzenie
 
 ### Walidacja i bezpieczeństwo (20%)
+
 ✅ Weryfikacja domeny i HTTPS
 ✅ Kryptograficznie bezpieczny nonce
 ✅ Timeout i jednorazowe kody
 ✅ Walidacja wejścia
 
 ### UX i ergonomia (15%)
+
 ✅ Intuicyjny interfejs popup
 ✅ Floating button nieprzeszkadzający w przeglądaniu
 ✅ Jasne komunikaty dla użytkownika nietchnicznego
 ✅ Responsywny design
 
 ### Innowacyjność (15%)
+
 ✅ Połączenie rozszerzenia przeglądarki z aplikacją mobilną
 ✅ QR code jako medium weryfikacji
 ✅ Proaktywna ochrona zamiast reaktywnej
@@ -242,6 +256,7 @@ gov-pl-verifier/
 ## TODO / Roadmap
 
 ### MVP (Completed) ✅
+
 - [x] Podstawowa weryfikacja domeny
 - [x] Sprawdzanie HTTPS
 - [x] Generowanie kodów QR z nonce
@@ -251,6 +266,7 @@ gov-pl-verifier/
 - [x] Ikony rozszerzenia (PNG)
 
 ### Wersja 1.1 (Production Ready)
+
 - [ ] Backend API do zarządzania sesjami
 - [ ] Lista oficjalnych domen (JSON resource)
 - [ ] Podpis cyfrowy kodów QR
@@ -260,6 +276,7 @@ gov-pl-verifier/
 - [ ] Audyt bezpieczeństwa
 
 ### Wersja 2.0 (Extended)
+
 - [ ] Wsparcie Firefox i Edge
 - [ ] Historia weryfikacji
 - [ ] Statystyki zagrożeń
@@ -304,4 +321,14 @@ MIT
 
 **Projekt stworzony na hackathon GOV.PL 2025**
 
-*To jest wersja prototypowa. Do wdrożenia produkcyjnego wymagane są: backend API, audyt bezpieczeństwa, oficjalna integracja z mObywatel oraz lista oficjalnych domen gov.pl.*
+_To jest wersja prototypowa. Do wdrożenia produkcyjnego wymagane są: backend API, audyt bezpieczeństwa, oficjalna integracja z mObywatel oraz lista oficjalnych domen gov.pl._
+
+
+
+## Roadmapa
+
+- [ ] mobywatel - zglos zlosliwa domene
+- [ ] roadmapa mobywatel - https://info.mobywatel.gov.pl/rozwoj-aplikacji
+- [ ] zlosliwe strony - przestrzegajmy jak antywirusy - https://cert.pl/lista-ostrzezen/ - - [ ] https://hole.cert.pl/domains/v2/domains.txt
+- [ ] zgłaszanie incydentu - https://incydent.cert.pl/domena#!/lang=pl
+- [ ] zgłaszanie podejrzanej strony - mobywatel - bezpieczni w sieci - zgłoś
