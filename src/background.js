@@ -172,7 +172,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await chrome.storage.local.set({ welcomeSeen: true });
     
     // Open welcome page on first install
-    chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/pages/welcome.html') });
   }
 });
 
