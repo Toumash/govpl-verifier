@@ -329,8 +329,8 @@ _To jest wersja prototypowa. Do wdrożenia produkcyjnego wymagane są: backend A
 
 - [ ] mobywatel - deeplink do zglos zlosliwa domene
 - [ ] roadmapa mobywatel - https://info.mobywatel.gov.pl/rozwoj-aplikacji
-- [ ] zlosliwe strony - przestrzegajmy jak antywirusy - https://cert.pl/lista-ostrzezen/ - - [ ] https://hole.cert.pl/domains/v2/domains.txt
+- [x] zlosliwe strony - przestrzegajmy jak antywirusy - https://cert.pl/lista-ostrzezen/ - - [ ] https://hole.cert.pl/domains/v2/domains.txt
 - [x] zgłaszanie incydentu - https://incydent.cert.pl/domena#!/lang=pl
 - [ ] zgłaszanie podejrzanej strony - mobywatel - bezpieczni w sieci - zgłoś
-- [x] dodatkowa weryfikacja - lista stron rządowych https://www.dns.pl/lista_gov_pl_z_www.csv
+- [x] dodatkowa weryfikacja - lista stron rządowych https://www.dns.pl/lista_gov_pl_z_www.csv https://dane.gov.pl/pl/dataset/1463,statystyki-rejestru-domeny-govpl/resource/63616,lista-nazw-domeny-govpl-z-usuga-www/table
 - [ ] weryfikacja na telefonie z telefonu - BLIK kod, ewentualnie SHARE menu -> mobywatel
