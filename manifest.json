@@ -6,10 +6,13 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "tabs"
+    "tabs",
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "https://www.dns.pl/*"
   ],
   "action": {
     "default_popup": "index.html",

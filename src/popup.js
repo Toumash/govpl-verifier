@@ -28,11 +28,19 @@ async function init() {
             <span class="label">Protokół:</span>
             <span class="value ${result.hasHttps ? 'good' : 'bad'}">${result.hasHttps ? 'HTTPS ✓' : 'HTTP ✗'}</span>
           </div>
-          <div class="detail-item">
-            <span class="label">Status:</span>
-            <span class="value">${result.isGovPl ? 'Domena GOV.PL' : 'Inna domena'}</span>
-          </div>
+          ${result.isOfficial !== null ? `
+            <div class="detail-item">
+              <span class="label">Lista oficjalna:</span>
+              <span class="value ${result.isOfficial ? 'good' : 'bad'}">${result.isOfficial ? 'Potwierdzona ✓' : 'Nie znaleziono ✗'}</span>
+            </div>
+          ` : ''}
         </div>
+        
+        ${result.details && result.details.length > 0 ? `
+          <div class="verification-details">
+            ${result.details.map(detail => `<div class="detail-line">${detail}</div>`).join('')}
+          </div>
+        ` : ''}
         
         ${result.canVerify ? `
           <button id="verify-btn" class="btn-primary">
@@ -46,7 +54,7 @@ async function init() {
           </button>
         ` : ''}
         
-        <a href="https://www.gov.pl/web/gov/lista-stron-govpl" target="_blank" class="link">
+        <a href="https://www.dns.pl/lista_gov_pl_z_www.csv" target="_blank" class="link">
           Zobacz listę oficjalnych stron GOV.PL →
         </a>
       </div>
@@ -65,7 +73,7 @@ async function init() {
   const reportBtn = document.getElementById('report-btn');
   if (reportBtn) {
     reportBtn.addEventListener('click', () => {
-      chrome.tabs.create({ url: `https://incydent.cert.pl/report?url=${encodeURIComponent(result.url)}` });
+      chrome.tabs.create({ url: 'https://incydent.cert.pl/domena#!/lang=pl' });
     });
   }
   

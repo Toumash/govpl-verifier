@@ -199,6 +199,21 @@ button {
   background: #545b62;
 }
 
+.verification-details {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #dc143c;
+}
+
+.detail-line {
+  font-size: 13px;
+  padding: 4px 0;
+  color: #495057;
+  line-height: 1.5;
+}
+
 .link {
   display: block;
   text-align: center;
