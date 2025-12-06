@@ -50,7 +50,7 @@ async function init() {
           </button>
         ` : ''}
         
-        ${result.status === 'danger' || result.status === 'warning' ? `
+        ${result.status === 'danger' ? `
           <button id="report-btn" class="btn-secondary">
             Zgłoś podejrzaną stronę
           </button>
