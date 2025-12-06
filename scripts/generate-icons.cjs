@@ -8,38 +8,34 @@ if (!fs.existsSync(iconsDir)) {
 }
 
 const sizes = [16, 48, 128];
-const icons = [
-  { name: 'icon', color: '#dc143c', text: '🛡' },
-  { name: 'safe', color: '#28a745', text: '✓' },
-  { name: 'warning', color: '#ffc107', text: '!' },
-  { name: 'danger', color: '#dc3545', text: '✗' }
-];
+const newLogoPath = path.join(iconsDir, 'new-logo.png');
 
-async function generateIcon(name, size, color, text) {
-  const svg = `
-    <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${size}" height="${size}" fill="${color}" rx="${size * 0.2}"/>
-      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" 
-            font-family="Arial" font-size="${size * 0.6}" font-weight="bold" fill="white">${text}</text>
-    </svg>
-  `;
-  
-  const outputPath = path.join(iconsDir, `${name}-${size}.png`);
-  await sharp(Buffer.from(svg))
-    .resize(size, size)
+async function generateIconFromLogo(size) {
+  const outputPath = path.join(iconsDir, `icon-${size}.png`);
+  await sharp(newLogoPath)
+    .resize(size, size, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 }
+    })
     .png()
     .toFile(outputPath);
   
-  console.log(`Generated ${name}-${size}.png`);
+  console.log(`Generated icon-${size}.png from new-logo.png`);
 }
 
 async function main() {
-  for (const icon of icons) {
-    for (const size of sizes) {
-      await generateIcon(icon.name, size, icon.color, icon.text);
-    }
+  // Check if new-logo.png exists
+  if (!fs.existsSync(newLogoPath)) {
+    console.error('new-logo.png not found in public/icons/');
+    process.exit(1);
   }
-  console.log('All icons generated!');
+
+  // Generate icon sizes from new-logo.png
+  for (const size of sizes) {
+    await generateIconFromLogo(size);
+  }
+  
+  console.log('All icons generated from new-logo.png!');
 }
 
 main().catch(console.error);
