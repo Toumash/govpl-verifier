@@ -49,6 +49,11 @@ Na oficjalnych stronach gov.pl dostępny jest floating button "Weryfikuj":
 - **Walidacja domeny** - sprawdzanie przeciwko oficjalnym domenom
 - **Szyfrowane połączenie** - wymóg HTTPS dla pełnej weryfikacji
 
+#### 5. Wsparcie dla MOBILE PLATFORM 
+
+ - **Wsparcie na mobilkach** - gotowy do implementacji moduł mObywatel deeplinkujący się do QR kodu wygenerowanego w rozszerzeniu przeglądarki
+ - **Obsługa przez share menu** - wystarczy kliknąć udostepnij link do aplikacji mObywatel, aby sprawdzić stronę internetową
+
 ## Instalacja
 
 ### Dla użytkowników
@@ -171,9 +176,7 @@ gov-pl-verifier/
 5. mObywatel → Dekoduje dane, sprawdza nonce
 6. mObywatel → Weryfikuje domenę w bazie oficjalnych stron
 7. mObywatel → Sprawdza certyfikat SSL
-8. mObywatel → Wysyła wynik do serwera
-9. Rozszerzenie → Odpytuje status (polling)
-10. Rozszerzenie → Wyświetla wynik użytkownikowi
+8. mObywatel → Pokazuje wynik użytkownikowi na telefonie
 ```
 
 **Uwaga:** W obecnej wersji prototypowej brakuje backendu do obsługi weryfikacji. W produkcji wymagany jest serwer API do komunikacji między rozszerzeniem a aplikacją mObywatel.
@@ -212,11 +215,7 @@ gov-pl-verifier/
 ### Co należy dodać w produkcji:
 
 ⚠️ **Podpis cyfrowy** - Kody QR powinny być podpisane cyfrowo
-⚠️ **Szyfrowanie end-to-end** - Dane weryfikacyjne powinny być szyfrowane
 ⚠️ **Backend API** - Serwer do zarządzania sesjami i komunikacji z mObywatel
-⚠️ **Lista oficjalnych domen** - JSON z whitelist domén gov.pl
-⚠️ **Rate limiting** - Ograniczenie liczby requestów
-⚠️ **Logging i monitoring** - Śledzenie prób oszustw
 
 ## Kryteria hackathonu
 
@@ -267,11 +266,10 @@ gov-pl-verifier/
 
 ### Wersja 1.1 (Production Ready)
 
-- [ ] Backend API do zarządzania sesjami
-- [ ] Lista oficjalnych domen (JSON resource)
+- [ ] Backend API do generowania kodów QR do mObywatela
 - [ ] Podpis cyfrowy kodów QR
 - [ ] Integracja z prawdziwą aplikacją mObywatel
-- [ ] Weryfikacja certyfikatów SSL (szczegółowa)
+- [ ] Szczegółowa weryfikacja certyfikatów SSL
 - [ ] Testy jednostkowe i integracyjne
 - [ ] Audyt bezpieczeństwa
 
@@ -280,42 +278,10 @@ gov-pl-verifier/
 - [ ] Wsparcie Firefox i Edge
 - [ ] Historia weryfikacji
 - [ ] Statystyki zagrożeń
-- [ ] Panel administracyjny
-- [ ] Machine learning do wykrywania phishingu
-- [ ] Współpraca z CERT Polska
-
-## Materiały prezentacyjne
-
-### Struktura prezentacji (max 10 slajdów):
-
-1. **Tytuł** - Weryfikacja GOV.PL
-2. **Problem** - Phishing stron rządowych
-3. **Rozwiązanie** - Rozszerzenie + mObywatel
-4. **Architektura** - Diagram flow
-5. **Funkcje** - Zrzuty ekranu
-6. **Scenariusze** - Pozytywny i negatywny
-7. **Bezpieczeństwo** - Mechanizmy ochrony
-8. **Technologie** - Stack techniczny
-9. **Wdrożenie** - Plan implementacji
-10. **Podsumowanie** - Impact i przyszłość
-
-### Film demo (max 3 minuty):
-
-1. Intro (15s) - Problem phishingu
-2. Demo pozytywne (60s) - Weryfikacja prawdziwej strony
-3. Demo negatywne (60s) - Wykrycie phishingu
-4. Funkcje (30s) - QR code + mObywatel
-5. Outro (15s) - Call to action
 
 ## Licencja
 
 MIT
-
-## Kontakt
-
-- GitHub Issues: [link]
-- Discord: [kanał projektu]
-- Email: [kontakt]
 
 ---
 
