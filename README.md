@@ -6,7 +6,7 @@ Rozszerzenie Chrome do weryfikacji autentyczności stron gov.pl za pomocą aplik
 
 [**🎨 figma**](https://www.figma.com/design/qsJJtet85pxIERe826mzmx/hacknathion2025?node-id=0-1&t=3yxaXIhRpV09mnxA-1) 
 
-[**🖥️ prezentacja**](./demo/mWeryfikatorStron.pdf]
+[**🖥️ prezentacja**](demo/mWeryfikatorStron.pdf)
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Chrome](https://img.shields.io/badge/Chrome-Extension-green.svg)
